@@ -82,18 +82,22 @@ go build -o nfe-go
 
 ## Estrutura do Projeto
 
+Abaixo está uma visão geral da estrutura do projeto:
+
+```plaintext
 nfe-go/
-├── main.go # Entrada principal do projeto
+├── main.go                # Ponto de entrada da aplicação
+├── myservice/       
+│   ├── myservice.go       # Autorização via SOAP
 ├── services/
-│ ├── cert.go # Funções para carregar e validar certificados digitais
-│ ├── xml.go # Geração e manipulação de XMLs
-│ ├── soap.go # Envio e consulta via SOAP
-├── myservice/
-│ └── myservice.go # Código gerado pela biblioteca gowsdl para comunicação com a SEFAZ
-├── .env # Configurações do ambiente (não incluído no repositório)
-├── go.mod # Gerenciador de dependências do Go
-├── go.sum # Checksum das dependências
-└── README.md # Documentação do projeto
+│   └── certificate.go     # Carregamento e utilização do certificado
+|   └── soap.go            # Implementações para envio de notas
+│   └── xml.go/            # Validação de XMLs
+├── .env.example           # Exemplo de configuração de variáveis de ambiente
+├── LICENSE                # Licença do projeto
+├── README.md              # Documentação principal
+└── go.mod                 # Dependências do projeto
+```
 
 ## Tecnologias Utilizadas
 
