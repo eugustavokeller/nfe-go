@@ -123,4 +123,4 @@ Certifique-se de ajustar o texto e as seções conforme necessário para refleti
 
 Se você encontrou este projeto útil, considere apoiar com uma doação.
 
-- [Doe via PayPal](https://www.paypal.com/donate?hosted_button_id=https://www.paypal.com/donate/?business=YG83VYCADSY6E&no_recurring=0&currency_code=BRL)
+- [Doe via PayPal](https://www.paypal.com/donate/?business=YG83VYCADSY6E&no_recurring=0&currency_code=BRL)
