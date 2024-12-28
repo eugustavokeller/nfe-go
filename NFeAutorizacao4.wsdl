@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4"
+             xmlns:tns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4">
+
+    <!-- Tipos de Dados -->
+    <types>
+        <xsd:schema targetNamespace="http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4">
+            <xsd:element name="nfeAutorizacaoLoteRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="nfeDadosMsg" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="nfeAutorizacaoLoteResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="retNFeAutorizacaoLote" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+
+    <!-- Mensagens -->
+    <message name="nfeAutorizacaoLoteRequest">
+        <part name="parameters" element="tns:nfeAutorizacaoLoteRequest"/>
+    </message>
+    <message name="nfeAutorizacaoLoteResponse">
+        <part name="parameters" element="tns:nfeAutorizacaoLoteResponse"/>
+    </message>
+
+    <!-- Operações -->
+    <portType name="NFeAutorizacao4PortType">
+        <operation name="nfeAutorizacaoLote">
+            <input message="tns:nfeAutorizacaoLoteRequest"/>
+            <output message="tns:nfeAutorizacaoLoteResponse"/>
+        </operation>
+    </portType>
+
+    <!-- Binding SOAP -->
+    <binding name="NFeAutorizacao4Binding" type="tns:NFeAutorizacao4PortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="nfeAutorizacaoLote">
+            <soap:operation soapAction="http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4/nfeAutorizacaoLote"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Serviço -->
+    <service name="NFeAutorizacao4Service">
+        <port name="NFeAutorizacao4Port" binding="tns:NFeAutorizacao4Binding">
+            <soap:address location="https://hom.nfe.fazenda.gov.br/NFeAutorizacao/NFeAutorizacao4.asmx"/>
+        </port>
+    </service>
+</definitions>
