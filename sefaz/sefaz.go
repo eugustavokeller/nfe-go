@@ -86,7 +86,6 @@ func (t *SefazTools) AssinarXML(xmlContent string) (string, error) {
 
 	// Inserir a assinatura no XML
 	xmlAssinado := InserirAssinaturaNoXML(xmlContent, assinatura)
-	fmt.Println("XML assinado sefaz.go - 89:", xmlAssinado)
 	return xmlAssinado, nil
 }
 

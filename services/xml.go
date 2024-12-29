@@ -3,6 +3,8 @@ package services
 import (
 	"encoding/xml"
 	"fmt"
+	"strconv"
+	"time"
 )
 
 // Estruturas do XML da NFe
@@ -96,14 +98,32 @@ type Prod struct {
 }
 
 type Total struct {
-	ICMSTot ICMSTot `xml:"ICMSTot"`
+	XMLName xml.Name `xml:"total"`
+	ICMSTot ICMSTot  `xml:"ICMSTot"`
 }
 
 type ICMSTot struct {
-	VBC   string `xml:"vBC"`
-	VICMS string `xml:"vICMS"`
-	VProd string `xml:"vProd"`
-	VNF   string `xml:"vNF"`
+	XMLName    xml.Name `xml:"ICMSTot"`
+	VBC        string   `xml:"vBC"`
+	VICMS      string   `xml:"vICMS"`
+	VICMSDeson string   `xml:"vICMSDeson,omitempty"`
+	VFCP       string   `xml:"vFCP,omitempty"`
+	VBSCST     string   `xml:"vBCST,omitempty"`
+	VST        string   `xml:"vST,omitempty"`
+	VFCPST     string   `xml:"vFCPST,omitempty"`
+	VFCPSTRet  string   `xml:"vFCPSTRet,omitempty"`
+	VProd      string   `xml:"vProd"`
+	VFrete     string   `xml:"vFrete,omitempty"`
+	VSeg       string   `xml:"vSeg,omitempty"`
+	VDesc      string   `xml:"vDesc,omitempty"`
+	VII        string   `xml:"vII,omitempty"`
+	VIPI       string   `xml:"vIPI,omitempty"`
+	VIPIDevol  string   `xml:"vIPIDevol,omitempty"`
+	VPIS       string   `xml:"vPIS,omitempty"`
+	VCOFINS    string   `xml:"vCOFINS,omitempty"`
+	VOutro     string   `xml:"vOutro,omitempty"`
+	VNF        string   `xml:"vNF"`
+	VTotTrib   string   `xml:"vTotTrib,omitempty"`
 }
 
 type InfNFe struct {
@@ -123,194 +143,135 @@ type NFe struct {
 	InfNFe  InfNFe   `xml:"infNFe"`
 }
 
-// Função para gerar XML da NFe
-func GerarXMLNFe() (string, error) {
-	nfe := NFe{
-		Xmlns: "http://www.portalfiscal.inf.br/nfe",
-		InfNFe: InfNFe{
-			Id:     "NFe41240706101244000490550010000067271091023595",
-			Versao: "4.00",
-			Ide: Ide{
-				CUF:      "41",
-				CNF:      "09102359",
-				NatOp:    "Remessa em bonificação, doação ou brinde",
-				Mod:      "55",
-				Serie:    "1",
-				NNF:      "6727",
-				DhEmi:    "2024-07-01T16:56:48-03:00",
-				TpNF:     "1",
-				IdDest:   "1",
-				CMunFG:   "4108809",
-				TpImp:    "1",
-				TpEmis:   "1",
-				CDV:      "5",
-				TpAmb:    "1",
-				FinNFe:   "1",
-				IndFinal: "0",
-				IndPres:  "0",
-				ProcEmi:  "0",
-				VerProc:  "1.0.0",
-			},
-			Emit: Emit{
-				CNPJ:  "06101244000490",
-				XNome: "INKOR INDUSTRIA CATARINENSE DE COLAS E REJUNTES",
-				XFant: "INKOR INDUSTRIA CATARINENSE DE COLAS E REJUNTES",
-				EnderEmit: EnderEmit{
-					XLgr:    "RUA MINISTRO GABRIEL PASSOS",
-					Nro:     "470",
-					XCpl:    "GLP 02",
-					XBairro: "CENTRO",
-					CMun:    "4108809",
-					XMun:    "Guaira",
-					UF:      "PR",
-					CEP:     "85980000",
-					CPais:   "1058",
-					XPais:   "BRASIL",
-					Fone:    "05136633247",
-				},
-				IE:  "9089733135",
-				CRT: "3",
-			},
-			Dest: Dest{
-				CNPJ:  "41521606000150",
-				XNome: "RARO COMERCIO DE ACABAMENTOS LTDA",
-				EnderDest: EnderDest{
-					XLgr:    "AV JOSE MARIA DE BRITO",
-					Nro:     "642",
-					XBairro: "JARDIM DAS NACOES",
-					CMun:    "4108304",
-					XMun:    "Foz do Iguacu",
-					UF:      "PR",
-					CEP:     "85864320",
-					CPais:   "1058",
-					XPais:   "BRASIL",
-					Fone:    "4535221316",
-				},
-				IndIEDest: "1",
-				IE:        "9088804802",
-				Email:     "natalinofonseca@hotmaio.com",
-			},
-			Det: []Det{
-				{
-					NItem: "1",
-					Prod: Prod{
-						CProd:    "2413",
-						XProd:    "ARGAMASSA SUPERKOLA ACIII 20 KG",
-						CEAN:     "7898476909292",
-						CEANTrib: "7898476909292",
-						NCM:      "32149000",
-						CFOP:     "5910",
-						UCom:     "SC",
-						QCom:     47.0,
-						VUnCom:   18.25,
-						VProd:    857.75,
-						UTrib:    "SC",
-						QTrib:    47.0,
-						VUnTrib:  18.25,
-						IndTot:   "1",
-					},
-				},
-			},
-			Total: Total{
-				ICMSTot: ICMSTot{
-					VBC:   "857.75",
-					VICMS: "102.93",
-					VProd: "857.75",
-					VNF:   "1008.97",
-				},
-			},
-		},
-	}
-
-	xmlBytes, err := xml.MarshalIndent(nfe, "", "  ")
-	if err != nil {
-		return "", fmt.Errorf("erro ao gerar o XML NFe: %w", err)
-	}
-
-	xmlString := `<?xml version="1.0" encoding="UTF-8"?>` + "\n" + string(xmlBytes)
-	return xmlString, nil
+type AutXML struct {
+	XMLName xml.Name `xml:"autXML"`
+	CNPJ    string   `xml:"CNPJ"`
 }
 
-func GerarXMLNFCe() (string, error) {
-	nfce := NFe{
-		InfNFe: InfNFe{
-			Versao: "4.00",
-			Ide: Ide{
-				CUF:      "35",
-				NatOp:    "Venda",
-				Mod:      "65",
-				Serie:    "1",
-				NNF:      "12345",
-				DhEmi:    "2024-12-28T10:00:00-03:00",
-				TpNF:     "1",
-				IdDest:   "1",
-				CMunFG:   "3550308",
-				TpImp:    "4",
-				TpEmis:   "1",
-				CDV:      "7",
-				TpAmb:    "2",
-				FinNFe:   "1",
-				IndFinal: "1",
-				IndPres:  "1",
-				ProcEmi:  "0",
-				VerProc:  "1.00",
-			},
-			Emit: Emit{
-				CNPJ:  "12345678901234",
-				XNome: "Empresa Teste LTDA",
-				XFant: "Empresa Teste",
-				EnderEmit: EnderEmit{
-					XLgr:    "Rua Exemplo",
-					Nro:     "123",
-					XBairro: "Bairro Exemplo",
-					CMun:    "3550308",
-					XMun:    "São Paulo",
-					UF:      "SP",
-					CEP:     "01001000",
-					CPais:   "1058",
-					XPais:   "Brasil",
-					Fone:    "1123456789",
-				},
-				IE:  "123456789",
-				CRT: "3",
-			},
-			Dest: Dest{
-				CNPJ:  "98765432100012",
-				XNome: "Cliente Teste LTDA",
-				EnderDest: EnderDest{
-					XLgr:    "Rua Cliente",
-					Nro:     "456",
-					XBairro: "Bairro Cliente",
-					CMun:    "3550308",
-					XMun:    "São Paulo",
-					UF:      "SP",
-					CEP:     "01002000",
-					CPais:   "1058",
-					XPais:   "Brasil",
-					Fone:    "1123456789",
-				},
-				IndIEDest: "1",
-			},
-			Total: Total{
-				ICMSTot: ICMSTot{
-					VBC:   "100.00",
-					VICMS: "18.00",
-					VProd: "100.00",
-					VNF:   "118.00",
-					// VFrete: "0.00",
-					// VSeg:   "0.00",
-					// VDesc:  "0.00",
-					// VOutro: "0.00",
-				},
-			},
-		},
-	}
+type Transp struct {
+	XMLName    xml.Name   `xml:"transp"`
+	ModFrete   string     `xml:"modFrete"`
+	Transporta Transporta `xml:"transporta"`
+	Vol        Vol        `xml:"vol"`
+}
 
-	xmlBytes, err := xml.MarshalIndent(nfce, "", "  ")
+type Transporta struct {
+	XMLName xml.Name `xml:"transporta"`
+	CNPJ    string   `xml:"CNPJ"`
+	XNome   string   `xml:"xNome"`
+	XEnder  string   `xml:"xEnder"`
+	XMun    string   `xml:"xMun"`
+	UF      string   `xml:"UF"`
+}
+
+type Vol struct {
+	XMLName xml.Name `xml:"vol"`
+	QVol    string   `xml:"qVol"`
+	Esp     string   `xml:"esp"`
+	PesoL   string   `xml:"pesoL"`
+	PesoB   string   `xml:"pesoB"`
+}
+
+type Cobr struct {
+	XMLName xml.Name `xml:"cobr"`
+	Fat     Fat      `xml:"fat"`
+	Dup     []Dup    `xml:"dup"`
+}
+
+type Fat struct {
+	XMLName xml.Name `xml:"fat"`
+	NFat    string   `xml:"nFat"`
+	VOrig   string   `xml:"vOrig"`
+	VDesc   string   `xml:"vDesc"`
+	VLiq    string   `xml:"vLiq"`
+}
+
+type Dup struct {
+	XMLName xml.Name `xml:"dup"`
+	NDup    string   `xml:"nDup"`
+	DVenc   string   `xml:"dVenc"`
+	VDup    string   `xml:"vDup"`
+}
+
+type Pag struct {
+	XMLName xml.Name `xml:"pag"`
+	DetPag  DetPag   `xml:"detPag"`
+}
+
+type DetPag struct {
+	XMLName xml.Name `xml:"detPag"`
+	IndPag  string   `xml:"indPag"`
+	TPag    string   `xml:"tPag"`
+	VPag    string   `xml:"vPag"`
+}
+
+type InfAdic struct {
+	XMLName xml.Name `xml:"infAdic"`
+	InfCpl  string   `xml:"infCpl"`
+}
+
+type InfRespTec struct {
+	XMLName  xml.Name `xml:"infRespTec"`
+	CNPJ     string   `xml:"CNPJ"`
+	XContato string   `xml:"xContato"`
+	Email    string   `xml:"email"`
+	Fone     string   `xml:"fone"`
+}
+
+// Função para gerar a chave de acesso da NFe
+func GerarChaveAcesso(ide Ide, emit Emit, nNF string, tpEmis string) (string, error) {
+	// Validar e formatar a data de emissão
+	// Data no formato AAAAMM (ano e mês)
+	anoMes, err := time.Parse("2006-01-02", ide.DhEmi[:10])
 	if err != nil {
-		return "", fmt.Errorf("erro ao gerar o XML NFCe: %w", err)
+		return "", fmt.Errorf("data de emissão inválida: %v", err)
 	}
+	anoMesFormatado := anoMes.Format("200601")
+	// Código aleatório de 8 dígitos (cNF)
+	cNF := ide.CNF
+	if len(cNF) != 8 {
+		return "", fmt.Errorf("o campo cNF deve ter 8 dígitos")
+	}
+	// Montar a chave de acesso sem o dígito verificador
+	chaveSemDV := fmt.Sprintf(
+		"%02s%s%s%s%02s%03s%09s%08s%s",
+		ide.CUF,         // Código da UF
+		anoMesFormatado, // Ano e mês (AAAAMM)
+		emit.CNPJ,       // CNPJ do emitente
+		ide.Mod,         // Modelo (55 ou 65)
+		ide.Serie,       // Série da nota
+		nNF,             // Número da nota fiscal
+		tpEmis,          // Tipo de emissão
+		cNF,             // Código numérico
+		"0",             // Placeholder para o dígito verificador
+	)
+	// Calcular o dígito verificador (DV) da chave
+	dv, err := calcularDV(chaveSemDV[:43])
+	if err != nil {
+		return "", fmt.Errorf("erro ao calcular dígito verificador: %v", err)
+	}
+	// Adicionar o dígito verificador à chave
+	chaveAcesso := chaveSemDV[:43] + strconv.Itoa(dv)
+	return chaveAcesso, nil
+}
 
-	xmlString := `<?xml version="1.0" encoding="UTF-8"?>` + "\n" + string(xmlBytes)
-	return xmlString, nil
+// Função para calcular o Dígito Verificador (DV) da chave de acesso
+func calcularDV(chave string) (int, error) {
+	if len(chave) != 43 {
+		return 0, fmt.Errorf("a chave de acesso deve ter exatamente 43 caracteres")
+	}
+	pesos := []int{4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2}
+	total := 0
+	for i, r := range chave {
+		valor, err := strconv.Atoi(string(r))
+		if err != nil {
+			return 0, fmt.Errorf("erro ao converter caractere para número: %v", err)
+		}
+		total += valor * pesos[i%len(pesos)]
+	}
+	resto := total % 11
+	if resto == 0 || resto == 1 {
+		return 0, nil
+	}
+	return 11 - resto, nil
 }
